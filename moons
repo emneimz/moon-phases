@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moon Phase Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #3a3028;
+      --parchment: #f5f0e8;
+      --gold: #a07830;
+      --gold-light: #b89050;
+      --silver: #6a6058;
+      --deep: #e8e0d0;
+      --glow: rgba(160, 120, 48, 0.12);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .widget-shell {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(160deg, #faf6ee 0%, #f5f0e8 60%, #f0ebe0 100%);
+      border-radius: 4px;
+      padding: 2.2rem 1.8rem 1.8rem;
+      box-shadow:
+        0 0 0 1px rgba(160,120,48,0.2),
+        0 0 40px rgba(160,120,48,0.06),
+        0 20px 60px rgba(0,0,0,0.12);
+      animation: fadeUp 1.2s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Corner ornaments */
+    .widget-shell::before,
+    .widget-shell::after {
+      content: '';
+      position: absolute;
+      width: 28px; height: 28px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.5;
+    }
+    .widget-shell::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+    .widget-shell::after  { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+    .corner-br { position: absolute; bottom: 10px; left: 10px; width: 28px; height: 28px; border: 1px solid var(--gold); border-width: 0 0 1px 1px; opacity: 0.5; }
+    .corner-tl { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border: 1px solid var(--gold); border-width: 1px 1px 0 0; opacity: 0.5; }
+
+    .widget-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 1.4rem;
+      opacity: 0.85;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+    }
+    .divider-star {
+      color: var(--gold);
+      font-size: 0.65rem;
+      opacity: 0.7;
+    }
+
+    /* Moon widget container */
+    .moon-embed {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.6rem;
+      filter: drop-shadow(0 0 12px rgba(160, 120, 48, 0.15));
+    }
+
+    /* Override widget text styles */
+    .moon_container, .moon_container * {
+      font-family: 'Cormorant Garamond', serif !important;
+      color: var(--ink) !important;
+    }
+
+    .divider-bottom {
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+    }
+
+    .birth-link {
+      text-align: center;
+    }
+
+    .birth-link p {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--silver);
+      opacity: 0.75;
+      line-height: 1.6;
+    }
+
+    .birth-link a {
+      color: var(--gold-light);
+      text-decoration: none;
+      font-style: normal;
+      font-weight: 400;
+      border-bottom: 1px solid rgba(201,168,76,0.3);
+      transition: border-color 0.3s, color 0.3s;
+      padding-bottom: 1px;
+    }
+
+    .birth-link a:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* Starfield background */
+    .stars {
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: var(--min, 0.1); }
+      to   { opacity: var(--max, 0.5); }
+    }
+
+    .widget-inner {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="widget-shell">
+
+    <!-- Starfield -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Corner accents -->
+    <div class="corner-br"></div>
+    <div class="corner-tl"></div>
+
+    <div class="widget-inner">
+      <div class="widget-title">Current Moon Phase</div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-star">✦</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- The original moon widget -->
+      <div class="moon-embed">
+        <div class="moon_container vertical" geo_pk="442" place="Austin, Texas, United States"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Original moon widget script -->
+  <script type="text/javascript" src="https://astro-charts.com/client/common/widget/js/widget-moon.min.js"></script>
+
+  <script>
+    // Generate random stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 40; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 1.5 + 0.5;
+      s.style.cssText = `
+        width: ${size}px; height: ${size}px;
+        top: ${Math.random() * 100}%;
+        left: ${Math.random() * 100}%;
+        --d: ${(Math.random() * 3 + 2).toFixed(1)}s;
+        --min: ${(Math.random() * 0.1).toFixed(2)};
+        --max: ${(Math.random() * 0.4 + 0.1).toFixed(2)};
+        animation-delay: ${(Math.random() * 3).toFixed(1)}s;
+      `;
+      starsEl.appendChild(s);
+    }
+  </script>
+</body>
+</html>
