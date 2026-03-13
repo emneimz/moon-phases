@@ -4,18 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moon Phase Widget</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink: #3a3028;
-      --parchment: #f5f0e8;
-      --gold: #a07830;
-      --gold-light: #b89050;
-      --silver: #6a6058;
-      --deep: #e8e0d0;
-      --glow: rgba(160, 120, 48, 0.12);
+      --ink: #4a3840;
+      --parchment: #f0ebe3;
+      --gold: #b07a6e;
+      --gold-light: #c9968a;
+      --silver: #6a8a88;
+      --deep: #e8e0d8;
+      --teal: #7aa8a4;
+      --mauve: #b8747c;
+      --olive: #8a9460;
+      --cream: #e8d8c4;
     }
 
     html, body {
@@ -25,7 +28,7 @@
     }
 
     body {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -37,13 +40,13 @@
       position: relative;
       width: 100%;
       max-width: 340px;
-      background: linear-gradient(160deg, #faf6ee 0%, #f5f0e8 60%, #f0ebe0 100%);
+      background: linear-gradient(160deg, #f2ebe0 0%, #ede4da 50%, #e8ddd4 100%);
       border-radius: 4px;
       padding: 2.2rem 1.8rem 1.8rem;
       box-shadow:
-        0 0 0 1px rgba(160,120,48,0.2),
-        0 0 40px rgba(160,120,48,0.06),
-        0 20px 60px rgba(0,0,0,0.12);
+        0 0 0 1px rgba(176,116,124,0.2),
+        0 0 40px rgba(122,168,164,0.08),
+        0 20px 60px rgba(74,56,64,0.1);
       animation: fadeUp 1.2s cubic-bezier(.22,.68,0,1.2) both;
     }
 
@@ -52,31 +55,31 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Corner ornaments */
     .widget-shell::before,
     .widget-shell::after {
       content: '';
       position: absolute;
       width: 28px; height: 28px;
-      border-color: var(--gold);
+      border-color: var(--mauve);
       border-style: solid;
-      opacity: 0.5;
+      opacity: 0.4;
     }
     .widget-shell::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
     .widget-shell::after  { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
 
-    .corner-br { position: absolute; bottom: 10px; left: 10px; width: 28px; height: 28px; border: 1px solid var(--gold); border-width: 0 0 1px 1px; opacity: 0.5; }
-    .corner-tl { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border: 1px solid var(--gold); border-width: 1px 1px 0 0; opacity: 0.5; }
+    .corner-br { position: absolute; bottom: 10px; left: 10px; width: 28px; height: 28px; border: 1px solid var(--teal); border-width: 0 0 1px 1px; opacity: 0.4; }
+    .corner-tl { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border: 1px solid var(--teal); border-width: 1px 1px 0 0; opacity: 0.4; }
 
     .widget-title {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.28em;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--silver);
       text-align: center;
       margin-bottom: 1.4rem;
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     .divider {
@@ -88,12 +91,12 @@
     .divider-line {
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(176,116,124,0.35), transparent);
     }
     .divider-star {
-      color: var(--gold);
+      color: var(--mauve);
       font-size: 0.65rem;
-      opacity: 0.7;
+      opacity: 0.6;
     }
 
     /* Moon widget container */
@@ -101,12 +104,12 @@
       display: flex;
       justify-content: center;
       margin-bottom: 0.6rem;
-      filter: drop-shadow(0 0 12px rgba(160, 120, 48, 0.15));
+      filter: drop-shadow(0 0 12px rgba(122, 168, 164, 0.2));
     }
 
     /* Override widget text styles */
     .moon_container, .moon_container * {
-      font-family: 'Cormorant Garamond', serif !important;
+      font-family: 'DM Sans', sans-serif !important;
       color: var(--ink) !important;
     }
 
@@ -154,7 +157,6 @@
     }
     .star {
       position: absolute;
-      background: var(--gold);
       border-radius: 50%;
       animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
     }
@@ -201,7 +203,7 @@
   <script type="text/javascript" src="https://astro-charts.com/client/common/widget/js/widget-moon.min.js"></script>
 
   <script>
-    // Generate random stars
+    const colors = ['#b8747c', '#7aa8a4', '#8a9460', '#c9968a'];
     const starsEl = document.getElementById('stars');
     for (let i = 0; i < 40; i++) {
       const s = document.createElement('div');
@@ -211,9 +213,10 @@
         width: ${size}px; height: ${size}px;
         top: ${Math.random() * 100}%;
         left: ${Math.random() * 100}%;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
         --d: ${(Math.random() * 3 + 2).toFixed(1)}s;
         --min: ${(Math.random() * 0.1).toFixed(2)};
-        --max: ${(Math.random() * 0.4 + 0.1).toFixed(2)};
+        --max: ${(Math.random() * 0.3 + 0.05).toFixed(2)};
         animation-delay: ${(Math.random() * 3).toFixed(1)}s;
       `;
       starsEl.appendChild(s);
